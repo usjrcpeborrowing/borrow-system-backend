@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
+const path = require("path");
+require('dotenv').config()
 
 /**
  * import routes
@@ -29,7 +31,16 @@ app.use("/api/classschedule", class_schedule);
 app.use("/api/student", students);
 app.use("/api/instructor", instructor);
 
-mongoose.connect("mongodb://127.0.0.1:27017/borrowsystem");
+try {
+  mongoose.connect(process.env.DATABASE);
+} catch (err) {
+  console.log(err)
+}
+
+app.use(express.static(__dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system"));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system/index.html"));
+});
 
 app.listen(3000, (err) => {
   if (err) console.log("error");
