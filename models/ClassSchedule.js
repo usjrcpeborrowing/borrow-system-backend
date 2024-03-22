@@ -42,6 +42,7 @@ const classScheduleSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  
 });
 
 module.exports = mongoose.model("class_schedule", classScheduleSchema);

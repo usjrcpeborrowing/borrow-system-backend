@@ -8,6 +8,7 @@ const departmentSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  
 });
 
 module.exports = mongoose.model("department", departmentSchema);

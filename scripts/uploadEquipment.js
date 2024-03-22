@@ -114,6 +114,7 @@ async function createNewFolder(file, drive, callback) {
   }
 }
 
+
 let thumbnailUrl = '';
 let midSizeUrl = '';
 

@@ -19,6 +19,7 @@ var departmentId = '';
 var mainFolder = '';
 var nameEquipment = '';
 
+
 const SCOPE = ["https://www.googleapis.com/auth/drive"];
 
 var directory = {

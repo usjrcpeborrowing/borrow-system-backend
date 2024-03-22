@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
       message: "success get",
       success: true,
     });
+    
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

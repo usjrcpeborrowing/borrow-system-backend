@@ -35,6 +35,7 @@ router.get("/getbyid/:id", async (req, res) => {
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
+  
 });
 
 router.post("/", async (req, res) => {

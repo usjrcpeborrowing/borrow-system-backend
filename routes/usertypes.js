@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
             message: "success get", 
             success: true,
         });
+        
     } catch (err) {
         res.json({ success: false });
     }

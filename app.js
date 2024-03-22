@@ -13,9 +13,6 @@ const borrowedItems = require("./routes/borrowedItems");
 const class_schedule = require("./routes/classSchedule");
 const students = require("./routes/student");
 const instructor = require("./routes/instructor");
-const users = require("./routes/users");
-const department = require("./routes/department");
-const usertypes = require("./routes/usertypes");
 
 /**
  * middleware
@@ -32,9 +29,6 @@ app.use("/api/borroweditems", borrowedItems);
 app.use("/api/classschedule", class_schedule);
 app.use("/api/student", students);
 app.use("/api/instructor", instructor);
-app.use("/api/users", users);
-app.use("/api/department", department);
-app.use("/api/usertypes", usertypes);
 
 // mongoose.connect("mongodb://127.0.0.1:27017/borrowsystem");
 try {

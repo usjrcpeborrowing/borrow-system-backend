@@ -40,6 +40,7 @@ router.get("/", async (req, res) => {
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
+  
 });
 
 router.get("/getbrandlist", async (req, res) => {

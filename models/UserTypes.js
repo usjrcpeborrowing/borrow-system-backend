@@ -8,6 +8,7 @@ const userTypesSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  
 });
 
 module.exports = mongoose.model("userTypes", userTypesSchema);
