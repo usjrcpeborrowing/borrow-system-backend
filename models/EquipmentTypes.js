@@ -12,6 +12,7 @@ const EquipmentTypeSchema = mongoose.Schema({
     type: Boolean,
     default: true
   }
+  
 });
 
 

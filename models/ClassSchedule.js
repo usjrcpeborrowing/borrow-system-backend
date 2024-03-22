@@ -1,3 +1,4 @@
+// const { time } = require("console");
 const mongoose = require("mongoose");
 
 const classScheduleSchema = mongoose.Schema({
@@ -10,26 +11,38 @@ const classScheduleSchema = mongoose.Schema({
   name: {
     type: String,
   },
-  schedule: {
+  days: {
     type: String,
+  },
+  time: {
+    start: {
+      type: String,
+    },
+    end: {
+      type: String,
+    }
   },
   room: {
     type: String,
   },
+  campus: {
+    type: String,
+  },
   instructor: {
     type: mongoose.Types.ObjectId,
-    ref: "instructor",
+    ref: "users",
   },
   students: [
     {
       type: mongoose.Types.ObjectId,
-      ref: "student",
+      ref: "users",
     },
   ],
   dis: {
     type: Boolean,
     default: true,
   },
+  
 });
 
 module.exports = mongoose.model("class_schedule", classScheduleSchema);

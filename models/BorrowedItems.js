@@ -17,6 +17,7 @@ const itemSchema = mongoose.Schema({
     type: String,
     default: "borrowed",
   },
+  
 });
 
 const borrowedItemsSchema = mongoose.Schema({
