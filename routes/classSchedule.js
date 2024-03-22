@@ -6,7 +6,7 @@ router.get("/", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
     let populateQuery = [
-      { path: "students", select: "name" },
+      { path: "students", select: ["name", "userId"] },
       { path: "instructor", select: "name" },
     ];
     let [schedlist, total] = await Promise.all([
@@ -35,6 +35,7 @@ router.get("/getbyid/:id", async (req, res) => {
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
+  
 });
 
 router.post("/", async (req, res) => {
@@ -47,8 +48,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/updateall/:id", async (req, res) => {
   try {
+    let id = req.params.id;
+    await ClassSchedule.findByIdAndUpdate(id, req.body);
+
+    res.json({ data: null, message: "success patch", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.patch("/addstudent/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    await ClassSchedule.findByIdAndUpdate(id, { $push: { students: req.body.students}}, {new : true} );
+
     res.json({ data: null, message: "success patch", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
@@ -65,5 +80,21 @@ router.delete("/:id", async (req, res) => {
     res.json({ data: null, message: err.message, success: false });
   }
 });
+
+/** get student's class schedule/s by id */
+router.get("/searchstudent/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let populateQuery = [{ path: "students", select: ["name", "userId"] }];
+
+    let schedules = await ClassSchedule.find({
+      students: { $in: [id]}
+    }).populate(populateQuery);
+
+    res.json({ data: schedules, message: "success search", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});``
 
 module.exports = router;

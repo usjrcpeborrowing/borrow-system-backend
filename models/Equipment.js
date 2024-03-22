@@ -40,9 +40,11 @@ const EquipmentSchema = mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  imagePath: 
+  images: 
   {
-    type: String,
+    thumbnailUrl: String,
+    midSizeUrl: String,
+    Url: String,
   },
   remarks: {
     type: String,
@@ -60,6 +62,7 @@ const EquipmentSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  
 });
 
 module.exports = mongoose.model("equipment", EquipmentSchema);
