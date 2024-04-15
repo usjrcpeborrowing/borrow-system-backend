@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    let { limit = 1, page = 1 } = req.query;
+    let { limit = 10, page = 1 } = req.query;
 
     let [equipmenttypes, total] = await Promise.all([
       EquipmentType.find()
