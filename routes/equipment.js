@@ -10,6 +10,7 @@ router.get("/", async (req, res) => {
     let equipmenttype = req.query.equipmenttype;
     let brand = req.query.brand;
     let matter = req.query.matter;
+    let inventorytype = req.query.inventorytype;
     let description = req.query.description;
     let dateacquired = req.query.dateAcquired;
     let remarks = req.query.remarks;
@@ -17,9 +18,10 @@ router.get("/", async (req, res) => {
     let populateQuery = [{ path: "type", select: "name" }];
     let query = { dis: true };
 
-    if (equipmenttype) query.equipmenttype = equipmenttype;
+    if (equipmenttype) query.equipmentType = equipmenttype;
     if (brand) query.brand = { $regex: brand, $options: "i" };
     if (matter) query.matter = matter;
+    if (inventorytype) query.inventorytype = inventorytype;
     if (description) query.description = { $regex: description, $options: "i" };
     if (dateacquired) query.dateAcquired = dateacquired;
     if (remarks) query.remarks = remarks;
@@ -46,11 +48,73 @@ router.get("/", async (req, res) => {
 router.get("/getbrandlist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
+    let equipmenttype = req.query.equipmenttype;
+    let query = {}
+
+    if(equipmenttype) query.equipmentType = equipmenttype;
 
     let [brandlist, total] = await Promise.all([
-      Equipment.find({ dis: true }, { brand: 1 })
-      .limit(limit)
-      .skip(limit * (page - 1)),
+      Equipment.find(query).distinct('brand'),
+      Equipment.find({ dis: true }).count(),
+    ]);
+
+    res.json({ data: brandlist, total: total, message: "success get", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getmatterlist", async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct('matter'),
+      Equipment.find({ dis: true }).count(),
+    ]);
+
+    res.json({ data: brandlist, total: total, message: "success get", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getequipmenttype", async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct('equipmentType'),
+      Equipment.find({ dis: true }).count(),
+    ]);
+
+    res.json({ data: brandlist, total: total, message: "success get", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getinventorytypelist", async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct('inventorytype'),
+      Equipment.find({ dis: true }).count(),
+    ]);
+
+    res.json({ data: brandlist, total: total, message: "success get", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getremarks", async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct('remarks'),
       Equipment.find({ dis: true }).count(),
     ]);
 
