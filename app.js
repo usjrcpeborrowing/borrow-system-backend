@@ -17,7 +17,8 @@ const class_schedule = require("./routes/classSchedule");
 const users = require("./routes/users");
 const department = require("./routes/department");
 const usertypes = require("./routes/usertypes");
-
+const report = require("./routes/report");
+const transactions = require("./routes/transaction");
 /**
  * middleware
  */
@@ -36,7 +37,8 @@ app.use("/api/classschedule", class_schedule);
 app.use("/api/users", users);
 app.use("/api/department", department);
 app.use("/api/usertypes", usertypes);
-
+app.use("/api/report", report);
+app.use("/api/transaction", transactions);
 try {
   mongoose.connect(process.env.DATABASE);
 } catch (err) {
