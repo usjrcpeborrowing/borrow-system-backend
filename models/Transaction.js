@@ -24,6 +24,26 @@ const transactionSchema = mongoose.Schema({
   equipmentId: {
     type: mongoose.Types.ObjectId,
     ref: "equipment",
+    required: true,
+  },
+  revision: {
+    type: [
+      {
+        field: {
+          type: String,
+          required: true
+        },
+        oldValue: {
+          type: String,
+          required: true
+        },
+        newValue: {
+          type: String,
+          required: true
+        },
+      },
+    ],
+    default: [],
   },
   dis: {
     type: Boolean,

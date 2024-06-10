@@ -5,6 +5,29 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
+    let aggregateQuery = [
+      // {
+      //   $match: {
+      //     equipmentId: {
+      //       $in: [new ObjectId("65e7f87df162d1a6883ffad5")],
+      //     },
+      //   },
+      // },
+      {
+        $group: {
+          _id: "$equipmentId",
+          data: {
+            $push: {
+              _id: "$_id",
+              revision: "$revision",
+              location: "$location",
+              role: "$role",
+              user: "$user",
+            },
+          },
+        },
+      },
+    ];
 
     let [transactions, total] = await Promise.all([
       Transaction.find()
@@ -28,7 +51,7 @@ router.post("/", async (req, res) => {
   try {
     let data = req.body;
     await Transaction.create(data);
-    res.json({ message: "success added", success: true });
+    res.json({ message: "transation added successfully", success: true });
   } catch (err) {
     res.json({ message: err.message, success: false });
   }
