@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
+
 const transactionSchema = mongoose.Schema({
   transactionType: {
     type: String,
+    enum: ['add', 'update']
   },
   user: {
     type: String,

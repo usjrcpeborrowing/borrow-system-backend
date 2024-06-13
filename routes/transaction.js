@@ -1,18 +1,22 @@
 const express = require("express");
 const Transaction = require("../models/Transaction");
 const router = express.Router();
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 router.get("/", async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    console.log(req.query);
+    let { page = 1, limit = 10, equipmentId = [] } = req.query;
+    let query = { dis: true };
+    equipmentId = Array.isArray(equipmentId) ? equipmentId : [equipmentId];
+    if (equipmentId.length) query.equipmentId = { $in: equipmentId.map((id) => new ObjectId(id)) };
+
+    console.log(query);
     let aggregateQuery = [
-      // {
-      //   $match: {
-      //     equipmentId: {
-      //       $in: [new ObjectId("65e7f87df162d1a6883ffad5")],
-      //     },
-      //   },
-      // },
+      {
+        $match: query,
+      },
       {
         $group: {
           _id: "$equipmentId",
@@ -23,27 +27,23 @@ router.get("/", async (req, res) => {
               location: "$location",
               role: "$role",
               user: "$user",
+              transactionType: "$transactionType",
             },
           },
         },
       },
     ];
 
-    let [transactions, total] = await Promise.all([
-      Transaction.find()
-        .limit(limit * 1)
-        .skip((page - 1) * limit),
-      Transaction.find({ dis: true }).count(),
-    ]);
+    let transactions = await Transaction.aggregate(aggregateQuery);
 
     res.json({
       data: transactions,
-      total: total,
+      total: transactions.length,
       message: "success get",
       success: true,
     });
   } catch (err) {
-    res.json({ success: false });
+    res.json({ success: false, message: err.message });
   }
 });
 
