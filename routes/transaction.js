@@ -28,6 +28,7 @@ router.get("/", async (req, res) => {
               role: "$role",
               user: "$user",
               transactionType: "$transactionType",
+              timeStamp: "$timeStamp"
             },
           },
         },
