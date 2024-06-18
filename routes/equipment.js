@@ -7,25 +7,35 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
+    let name = req.query.name;
     let equipmenttype = req.query.equipmenttype;
     let brand = req.query.brand;
     let matter = req.query.matter;
-    let inventorytype = req.query.inventorytype;
+    let inventoryType = req.query.inventorytype;
     let description = req.query.description;
     let dateacquired = req.query.dateAcquired;
     let remarks = req.query.remarks;
     let department = req.query.department;
+    let location = req.query.location;
     let populateQuery = [{ path: "type", select: "name" }];
     let query = { dis: true };
 
+    if (name) query.name = { $regex: name, $options: "i" };
     if (equipmenttype) query.equipmentType = equipmenttype;
     if (brand) query.brand = { $regex: brand, $options: "i" };
     if (matter) query.matter = matter;
-    if (inventorytype) query.inventorytype = inventorytype;
+    if (inventoryType) query.inventorytype = inventoryType;
     if (description) query.description = { $regex: description, $options: "i" };
-    if (dateacquired) query.dateAcquired = dateacquired;
+    if (dateacquired) {
+      const [start, end] = dateacquired.includes("|") ? dateacquired.split("|").map((date) => new Date(date)) : [new Date(dateacquired), new Date()];
+      query.dateAcquired = {
+        $gte: start,
+        $lte: end,
+      };
+    }
     if (remarks) query.remarks = remarks;
     if (department) query.department = department;
+    if (location) query.location = location;
 
     let [equipments, total] = await Promise.all([
       Equipment.find(query)
