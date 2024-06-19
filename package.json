@@ -10,6 +10,7 @@
     "file-type": "^19.0.0",
     "fs": "^0.0.1-security",
     "googleapis": "^105.0.0",
+    "jsonwebtoken": "^9.0.2",
     "lz-string": "^1.5.0",
     "mongoose": "^8.1.0",
     "node-fetch": "^3.3.2",

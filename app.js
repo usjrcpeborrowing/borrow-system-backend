@@ -3,7 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
 const path = require("path");
-require('dotenv').config()
+require("dotenv").config();
 
 /**
  * import routes
@@ -19,15 +19,24 @@ const department = require("./routes/department");
 const usertypes = require("./routes/usertypes");
 const report = require("./routes/report");
 const transactions = require("./routes/transaction");
+const loginRoute = require("./routes/login");
+const authenticate = require("./middlewares/authenticate");
+
+/**
+ * Login Route
+ */
+
+
 /**
  * middleware
  */
 app.use(express.json());
 app.use(cors());
-
-/**
+/**s
  * routes
  */
+app.use("/api/login", loginRoute);
+// app.use(authenticate); // authenticate middleware
 app.use("/api/equipment", equipmentRoute);
 app.use("/api/equipmenttype", equipmenttypeRoute);
 app.use("/api/borroweditems", borrowedItems);
@@ -42,7 +51,7 @@ app.use("/api/transaction", transactions);
 try {
   mongoose.connect(process.env.DATABASE);
 } catch (err) {
-  console.log(err)
+  console.log(err);
 }
 
 app.use(express.static(__dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system"));
