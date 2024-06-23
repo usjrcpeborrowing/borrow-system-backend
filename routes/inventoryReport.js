@@ -6,6 +6,27 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    let populateQuery = [
+      { path: "approval.approveBy", select: "firstName lastName" },
+      { path: "issuedBy", select: "firstName lastName" },
+    ];
+    let result = await InventoryReport.findOne({}).populate(populateQuery);
+    res.json({
+      data: result,
+      message: "success",
+      sucess: true,
+    });
+  } catch (err) {
+    res.json({
+      data: null,
+      message: err.message,
+      sucess: false,
+    });
+  }
+});
+
+router.get("/getbydepartment", async (req, res) => {
+  try {
     res.json({
       data: null,
       message: "success",
@@ -19,6 +40,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 router.post("/", async (req, res) => {
   try {
     let data = req.body;

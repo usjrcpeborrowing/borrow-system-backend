@@ -19,6 +19,10 @@ const inventoryReportSchema = mongoose.Schema({
     type: ObjectId,
     ref: "users",
   },
+  issuedDate: {
+    type: Date,
+    default: Date.now,
+  },
   approval: {
     type: [
       {
