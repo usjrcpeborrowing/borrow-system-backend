@@ -6,15 +6,19 @@ const userSchema = mongoose.Schema({
   },
   firstName: {
     type: String,
+    required: true,
   },
   middleName: {
     type: String,
+    required: true,
   },
   lastName: {
     type: String,
+    required: true,
   },
   age: {
     type: Number,
+    required: true,
   },
   role: {
     type: [String],
@@ -24,7 +28,16 @@ const userSchema = mongoose.Schema({
   department: {
     enum: ["CPE"],
     type: [String],
-    required: true
+    required: true,
+  },
+  schoolId: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
   },
   dis: {
     type: Boolean,

@@ -23,4 +23,25 @@ const getAdministrator = async () => {
   return await Users.findOne(query);
 };
 
-module.exports = { getChairman, getOIC, getAdministrator };
+const findUserBySchoolId = async (schooldId) => {
+  let query = {
+    schoolId: schooldId,
+  };
+  return await Users.findOne(query);
+};
+
+const findUserBySchoolIdAndPassword = async (schooldId, password) => {
+  let query = {
+    schoolId: Number(schooldId),
+    password,
+  };
+  return await Users.findOne(query);
+};
+
+module.exports = {
+  getChairman,
+  getOIC,
+  getAdministrator,
+  findUserBySchoolId,
+  findUserBySchoolIdAndPassword,
+};

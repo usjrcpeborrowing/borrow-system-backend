@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const express = require("express");
+require("dotenv").config();
 
 const authenticateToken = (req, res, next) => {
   // exclude login path
@@ -11,13 +12,13 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (authHeader == null) {
     console.log("no authheader");
-    return res.sendStatus(401);
+    return res.status(401).json({ message: "No Auth Header" });
   }
 
-  jwt.verify(authHeader, "wahahhalol", (err, user) => {
+  jwt.verify(authHeader, process.env.JWT_SECRETKEY, (err, user) => {
     console.log(err);
 
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).json({ message: err.message });
 
     req.user = user;
 

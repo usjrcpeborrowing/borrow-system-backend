@@ -28,6 +28,8 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     let data = req.body;
+    let user = userRepository.findUserBySchoolId(data.schoolId);
+    if (user) throw new Error("schoolId already exists");
     await Users.create(data);
     res.json({ message: "success added", success: true });
   } catch (err) {
@@ -83,7 +85,11 @@ router.get("/getdepartmentoic", async (req, res) => {
 router.get("/getadministrator", async (req, res) => {
   try {
     let result = await userRepository.getAdministrator();
-    res.json({ data: result, message: "success getting admistrator", success: true });
+    res.json({
+      data: result,
+      message: "success getting admistrator",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

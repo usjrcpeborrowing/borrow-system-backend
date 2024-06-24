@@ -36,6 +36,7 @@ app.use(cors());
  * routes
  */
 app.use("/api/login", loginRoute);
+app.use(authenticate);
 app.use("/api/equipment", equipmentRoute);
 app.use("/api/equipmenttype", equipmenttypeRoute);
 app.use("/api/borroweditems", borrowedItems);
