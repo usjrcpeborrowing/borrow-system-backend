@@ -44,6 +44,7 @@ router.get("/getbydepartment", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     let data = req.body;
+    console.table(data);
     let [oic, chairman, administrator] = await Promise.all([
       userRepository.getOIC(data.department),
       userRepository.getChairman(data.department),
@@ -84,19 +85,19 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let { role } = req.body;
+    let { role, status } = req.body;
     let inventoryreport = await inventoryRepository.getInventoryReportById(id);
 
     if (!inventoryreport) throw new Error("No Inventory Report Found");
 
     let approval = inventoryreport.approval;
     let index = approval.findIndex((appr) => appr.role == role);
-    approval[index].status = "approve";
+    approval[index].status = status;
     console.log(approval);
     let result = await InventoryReport.findByIdAndUpdate(id, { approval });
     res.json({
       data: inventoryreport,
-      message: "success patch",
+      message: "success updating inventory report",
       success: true,
     });
   } catch (err) {
