@@ -227,7 +227,7 @@ router.post("/", async (req, res) => {
     await Equipment.create(data);
     res.json({
       data: data,
-      message: "success create",
+      message: "success creating equipment",
       success: true,
     });
   } catch (err) {

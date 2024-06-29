@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
   try {
     let data = req.body;
     await EquipmentType.create(data);
-    res.json({ data: null, message: "success register", success: true });
+    res.json({ data: null, message: "success creating equipment type", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
