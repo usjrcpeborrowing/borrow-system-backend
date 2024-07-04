@@ -35,7 +35,7 @@ const findUserBySchoolIdAndPassword = async (schooldId, password) => {
     schoolId: Number(schooldId),
     password,
   };
-  return await Users.findOne(query);
+  return await Users.findOne(query).lean();
 };
 
 module.exports = {

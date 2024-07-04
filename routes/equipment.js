@@ -27,7 +27,9 @@ router.get("/", async (req, res) => {
     if (inventoryType) query.inventorytype = inventoryType;
     if (description) query.description = { $regex: description, $options: "i" };
     if (dateacquired) {
-      const [start, end] = dateacquired.includes("|") ? dateacquired.split("|").map((date) => new Date(date)) : [new Date(dateacquired), new Date()];
+      const [start, end] = dateacquired.includes("|")
+        ? dateacquired.split("|").map((date) => new Date(date))
+        : [new Date(dateacquired), new Date()];
       query.dateAcquired = {
         $gte: start,
         $lte: end,
@@ -62,9 +64,19 @@ router.get("/getbrandlist", async (req, res) => {
 
     if (equipmenttype) query.equipmentType = equipmenttype;
 
-    let [brandlist, total] = await Promise.all([Equipment.find(query).distinct("brand"), Equipment.find({ dis: true }).count()]);
+    let [brandlist, total] = await Promise.all([
+      Equipment.find(query).distinct("brand"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: brandlist, total: total, message: "success get", success: true });
+    // res.json({ data: brandlist, message:  "success get brands", success: true });
+
+    res.json({
+      data: brandlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -74,9 +86,17 @@ router.get("/getmatterlist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [brandlist, total] = await Promise.all([Equipment.distinct("matter"), Equipment.find({ dis: true }).count()]);
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct("matter"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: brandlist, total: total, message: "success get", success: true });
+    res.json({
+      data: brandlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -86,9 +106,17 @@ router.get("/getequipmenttype", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [brandlist, total] = await Promise.all([Equipment.distinct("equipmentType"), Equipment.find({ dis: true }).count()]);
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct("equipmentType"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: brandlist, total: total, message: "success get", success: true });
+    res.json({
+      data: brandlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -98,9 +126,16 @@ router.get("/getinventorytypelist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [brandlist, total] = await Promise.all([Equipment.distinct("inventorytype"), Equipment.find({ dis: true }).count()]);
+    let [brandlist, total] = await Promise.all([
+      Equipment.distinct("inventorytype"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: brandlist, total: total, message: "success get", success: true });
+    res.json({
+      data: brandlist,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -108,11 +143,12 @@ router.get("/getinventorytypelist", async (req, res) => {
 
 router.get("/getremarks", async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    let [remarks, total] = await Promise.all([
+      Equipment.distinct("remarks"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    let [brandlist, total] = await Promise.all([Equipment.distinct("remarks"), Equipment.find({ dis: true }).count()]);
-
-    res.json({ data: brandlist, total: total, message: "success get", success: true });
+    res.json({ data: remarks, message: "success get", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -130,7 +166,12 @@ router.get("/getbynameasc", async (req, res) => {
       Equipment.find({ dis: true }).count(),
     ]);
 
-    res.json({ data: ascedingnamelist, total: total, message: "success get", success: true });
+    res.json({
+      data: ascedingnamelist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -148,7 +189,12 @@ router.get("/getbynamedesc", async (req, res) => {
       Equipment.find({ dis: true }).count(),
     ]);
 
-    res.json({ data: descendingnamelist, total: total, message: "success get", success: true });
+    res.json({
+      data: descendingnamelist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -166,7 +212,12 @@ router.get("/getbycolorasc", async (req, res) => {
       Equipment.find({ dis: true }).count(),
     ]);
 
-    res.json({ data: ascendingcolorlist, total: total, message: "success get", success: true });
+    res.json({
+      data: ascendingcolorlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -184,7 +235,12 @@ router.get("/getbycolordesc", async (req, res) => {
       Equipment.find({ dis: true }).count(),
     ]);
 
-    res.json({ data: descendingcolorlist, total: total, message: "success get", success: true });
+    res.json({
+      data: descendingcolorlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -192,7 +248,21 @@ router.get("/getbycolordesc", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let { authorize, uploadFile, createNewFolder, compressImage, thumbSizeUpload, midSizeUpload, convertImage, fetchImage, toThumbnail, toMidSize, initializeVariable, getThumbnailURL, getMidSizeURL } = require("../scripts/uploadEquipment");
+    let {
+      authorize,
+      uploadFile,
+      createNewFolder,
+      compressImage,
+      thumbSizeUpload,
+      midSizeUpload,
+      convertImage,
+      fetchImage,
+      toThumbnail,
+      toMidSize,
+      initializeVariable,
+      getThumbnailURL,
+      getMidSizeURL,
+    } = require("../scripts/uploadEquipment");
 
     let data = await req.body;
     let directory = {
@@ -239,9 +309,17 @@ router.get("/getdepartmentlist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [departmentlist, total] = await Promise.all([Equipment.distinct("department"), Equipment.find({ dis: true }).count()]);
+    let [departmentlist, total] = await Promise.all([
+      Equipment.distinct("department"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: departmentlist, total: total, message: "success get", success: true });
+    res.json({
+      data: departmentlist,
+      total: total,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -251,9 +329,16 @@ router.get("/getlocationlist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [locationlist, total] = await Promise.all([Equipment.distinct("location"), Equipment.find({ dis: true }).count()]);
+    let [locationlist, total] = await Promise.all([
+      Equipment.distinct("location"),
+      Equipment.find({ dis: true }).count(),
+    ]);
 
-    res.json({ data: locationlist, total: total, message: "success get", success: true });
+    res.json({
+      data: locationlist,
+      message: "success get",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -291,7 +376,10 @@ router.get("/search", async (req, res) => {
   try {
     let searchword = req.query.search;
     let equipments = await Equipment.find({
-      $or: [{ name: { $regex: searchword, $options: "i" } }, { description: { $regex: searchword, $options: "i" } }],
+      $or: [
+        { name: { $regex: searchword, $options: "i" } },
+        { description: { $regex: searchword, $options: "i" } },
+      ],
     });
     res.json({ data: equipments, message: "success search", success: true });
   } catch (err) {
