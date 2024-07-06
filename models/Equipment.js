@@ -58,6 +58,11 @@ const EquipmentSchema = mongoose.Schema({
   department: {
     type: String,
   },
+  availability: {
+    type: String,
+    enum: ["available", "borrowed", "unreturned "],
+    required: true,
+  },
   dis: {
     type: Boolean,
     default: true,

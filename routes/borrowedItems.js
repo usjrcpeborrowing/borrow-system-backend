@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const BorrowedItems = require("../models/BorrowedItems");
+const { updateEquipmentStatus } = require("../repositories/borrowedItems");
 
 router.get("/", async (req, res) => {
   try {
@@ -8,11 +9,10 @@ router.get("/", async (req, res) => {
     let limit = req.query.limit;
 
     let populateQuery = [
-      { path: "borrower", select: "name" },
+      { path: "borrower", select: "schoolId firstName lastName" },
       {
         path: "itemborrowed.equipment",
-        select: "name",
-        populate: { path: "type", select: "name" },
+        select: "name brand remarks",
       },
     ];
 
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
         .populate(populateQuery)
         .limit(limit)
         .skip(limit * (page - 1)),
-      BorrowedItems.count(),
+      BorrowedItems.find({ dis: true }).count(),
     ]);
 
     res.json({
@@ -48,7 +48,8 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   try {
-    res.json({ data: null, message: "success patch", success: true });
+    let result = await updateEquipmentStatus();
+    res.json({ data: result, message: "success patch", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -62,7 +63,6 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
-  
 });
 
 module.exports = router;

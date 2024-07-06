@@ -28,7 +28,9 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     let data = req.body;
-    let user = userRepository.findUserBySchoolId(data.schoolId);
+    console.log({ schoolId: data.schoolId });
+    let user = await userRepository.findUserBySchoolId(data.schoolId);
+    console.log(user)
     if (user) throw new Error("schoolId already exists");
     await Users.create(data);
     res.json({ message: "success added", success: true });

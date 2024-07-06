@@ -7,6 +7,7 @@ const itemSchema = mongoose.Schema({
   },
   quantity: {
     type: Number,
+    default: 1,
     required: true,
   },
   condition: {
@@ -15,9 +16,10 @@ const itemSchema = mongoose.Schema({
   },
   status: {
     type: String,
+    enum: ["available", "borrowed", "unreturned "],
     default: "borrowed",
+    required: true,
   },
-  
 });
 
 const borrowedItemsSchema = mongoose.Schema({
@@ -33,12 +35,13 @@ const borrowedItemsSchema = mongoose.Schema({
   },
   borrower: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "student",
+    required: true,
+    ref: "users",
   },
   dis: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
 
 module.exports = mongoose.model("borrowed_items", borrowedItemsSchema);

@@ -143,7 +143,7 @@ router.get("/getinventorytypelist", async (req, res) => {
 
 router.get("/getremarks", async (req, res) => {
   try {
-    let [remarks, total] = await Promise.all([
+    let [remarks] = await Promise.all([
       Equipment.distinct("remarks"),
       Equipment.find({ dis: true }).count(),
     ]);
