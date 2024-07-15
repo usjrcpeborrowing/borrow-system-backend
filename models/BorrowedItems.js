@@ -16,8 +16,8 @@ const itemSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["available", "borrowed", "unreturned "],
-    default: "borrowed",
+    enum: ["available", "released", "unreturned", "pending"],
+    default: "pending",
     required: true,
   },
 });

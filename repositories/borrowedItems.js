@@ -5,20 +5,19 @@ const getInventoryReportById = async (id) => {
   return await BorrowedItems.findById(id);
 };
 
-const updateEquipmentStatus = async () => {
+const updateEquipmentStatus = async (id, equipmentIds, status) => {
   return await BorrowedItems.updateMany(
     {
-      _id: "6688fadf101d387313b261fc",
-      "itemborrowed.equipment": {
-        $in: ["65e7f9abf162d1a6883ffb47"],
-      },
+      _id: id,
     },
     {
       $set: {
-        "itemborrowed.$.status": "available",
+        "itemborrowed.$[elem].status": status,
       },
     },
-    
+    {
+      arrayFilters: [{ "elem.equipment": { $in: equipmentIds } }],
+    }
   );
 };
 

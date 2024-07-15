@@ -5,6 +5,18 @@ const app = express();
 const path = require("path");
 require("dotenv").config();
 
+//socket io
+const http = require("http");
+const socketIo = require("socket.io");
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:4200", // your Angular app URL
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  },
+});
 /**
  * import routes
  */
@@ -24,15 +36,27 @@ const loginRoute = require("./routes/login");
 const authenticate = require("./middlewares/authenticate");
 
 /**
- * Login Route
+ * Io
  */
+
+io.on("connection", (socket) => {
+  console.log("a user connected", socket.id);
+
+  // io.emit("testevent", "luhh");
+});
 
 /**
  * middleware
  */
 app.use(express.json());
 app.use(cors());
-/**s
+// Make io accessible to our router
+app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});
+
+/**
  * routes
  */
 app.use("/api/login", loginRoute);
@@ -54,12 +78,21 @@ try {
   console.log(err);
 }
 
-app.use(express.static(__dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system"));
+app.use(
+  express.static(
+    __dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system"
+  )
+);
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname + "./../borrow-system-frontend/dist/usjr-borrowing-system/index.html"));
+  res.sendFile(
+    path.join(
+      __dirname +
+        "./../borrow-system-frontend/dist/usjr-borrowing-system/index.html"
+    )
+  );
 });
 
-app.listen(3000, (err) => {
+server.listen(3000, (err) => {
   if (err) console.log("error");
   else console.log("listening to port 3000");
 });

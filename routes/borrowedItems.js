@@ -48,7 +48,10 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   try {
-    let result = await updateEquipmentStatus();
+    let id = req.params.id;
+    let itemReturnedIds = req.body.itemreturned.map((x) => x.equipment);
+    let status = req.body.status;
+    let result = await updateEquipmentStatus(id, itemReturnedIds, status);
     res.json({ data: result, message: "success patch", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
