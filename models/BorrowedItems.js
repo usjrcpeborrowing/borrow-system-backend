@@ -38,6 +38,18 @@ const borrowedItemsSchema = mongoose.Schema({
     required: true,
     ref: "users",
   },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "users",
+  },
+  className: {
+    type: String,
+    require: true
+  },
+  instructor: {
+    type: String,
+  },
   dis: {
     type: Boolean,
     default: true,

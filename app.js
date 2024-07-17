@@ -38,11 +38,24 @@ const authenticate = require("./middlewares/authenticate");
 /**
  * Io
  */
-
+app.userSockets = {};
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
 
-  // io.emit("testevent", "luhh");
+  const userId = socket.handshake.query.userId;
+  if (userId) {
+    console.log('user id', userId);
+    app.userSockets[userId] = socket.id;
+  }
+
+  socket.on("disconnect", () => {
+    console.log("client disconnected:", socket.id);
+    let userId = Object.keys(app.userSockets).find(
+      (k) => app.userSockets[k] == socket.id
+    );
+    delete app.userSockets[userId];
+    console.log(app.userSockets);
+  });
 });
 
 /**
@@ -53,6 +66,7 @@ app.use(cors());
 // Make io accessible to our router
 app.use(function (req, res, next) {
   req.io = io;
+  req.userSockets = app.userSockets;
   next();
 });
 

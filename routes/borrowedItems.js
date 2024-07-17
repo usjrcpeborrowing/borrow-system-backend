@@ -39,7 +39,8 @@ router.post("/", async (req, res) => {
   try {
     let data = req.body;
     await BorrowedItems.create(data);
-
+    const socketId = req?.userSockets[data.instructor];
+    req.io.emit("notification", "New Borrow Request");
     res.json({ data: null, message: "success register", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });

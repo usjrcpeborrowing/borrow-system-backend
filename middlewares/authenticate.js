@@ -16,7 +16,6 @@ const authenticateToken = (req, res, next) => {
   }
 
   jwt.verify(authHeader, process.env.JWT_SECRETKEY, (err, user) => {
-    console.log(err);
 
     if (err) return res.status(403).json({ message: err.message });
 
