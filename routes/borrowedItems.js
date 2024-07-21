@@ -1,12 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const BorrowedItems = require("../models/BorrowedItems");
-const { updateEquipmentStatus } = require("../repositories/borrowedItems");
+const {
+  updateEquipmentStatus,
+  findEquipmentByQuery,
+} = require("../repositories/borrowedItems");
 
 router.get("/", async (req, res) => {
   try {
     let page = req.query.page;
     let limit = req.query.limit;
+    let status = req.query.status;
+    let instructor = req.query.instructor;
 
     let populateQuery = [
       { path: "borrower", select: "schoolId firstName lastName" },
@@ -16,11 +21,13 @@ router.get("/", async (req, res) => {
       },
     ];
 
+    let query = {
+      status,
+      dis: true,
+    };
+
     let [borrowedItems, total] = await Promise.all([
-      BorrowedItems.find({ dis: true })
-        .populate(populateQuery)
-        .limit(limit)
-        .skip(limit * (page - 1)),
+      findEquipmentByQuery(query, populateQuery, limit, page),
       BorrowedItems.find({ dis: true }).count(),
     ]);
 
@@ -40,8 +47,12 @@ router.post("/", async (req, res) => {
     let data = req.body;
     await BorrowedItems.create(data);
     const socketId = req?.userSockets[data.instructor];
-    req.io.emit("notification", "New Borrow Request");
-    res.json({ data: null, message: "success register", success: true });
+    req.io.to(socketId).emit("notification", "New Borrow Request");
+    res.json({
+      data: null,
+      message: "Success requesting borrow equipments",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -50,10 +61,11 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let itemReturnedIds = req.body.itemreturned.map((x) => x.equipment);
+    
+    let itemIds = req.body.items.map((x) => x.equipment);
     let status = req.body.status;
-    let result = await updateEquipmentStatus(id, itemReturnedIds, status);
-    res.json({ data: result, message: "success patch", success: true });
+    let result = await updateEquipmentStatus(id, itemIds, status);
+    res.json({ data: result, message: "success updating borrowed items", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

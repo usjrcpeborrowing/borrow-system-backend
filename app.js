@@ -33,6 +33,8 @@ const report = require("./routes/report");
 const transactions = require("./routes/transaction");
 const inventoryreport = require("./routes/inventoryReport");
 const loginRoute = require("./routes/login");
+const notificationRoute = require("./routes/notifications");
+
 const authenticate = require("./middlewares/authenticate");
 
 /**
@@ -85,6 +87,8 @@ app.use("/api/usertypes", usertypes);
 app.use("/api/report", report);
 app.use("/api/transaction", transactions);
 app.use("/api/inventoryreport", inventoryreport);
+app.use("/api/notification", notificationRoute);
+
 
 try {
   mongoose.connect(process.env.DATABASE);

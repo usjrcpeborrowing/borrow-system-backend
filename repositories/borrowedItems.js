@@ -17,8 +17,16 @@ const updateEquipmentStatus = async (id, equipmentIds, status) => {
     },
     {
       arrayFilters: [{ "elem.equipment": { $in: equipmentIds } }],
+      runValidators: true
     }
   );
 };
 
-module.exports = { updateEquipmentStatus };
+const findEquipmentByQuery = async (query, populateQuery, limit, page) => {
+  return BorrowedItems.find(query)
+    .populate(populateQuery)
+    .limit(limit)
+    .skip(limit * (page - 1));
+};
+
+module.exports = { updateEquipmentStatus, findEquipmentByQuery };

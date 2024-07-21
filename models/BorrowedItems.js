@@ -16,8 +16,8 @@ const itemSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["available", "released", "unreturned", "pending"],
-    default: "pending",
+    enum:  ["approved", "released", "unreturned", "pending_approval", "pending_return", "returned"],
+    default: "pending_approval",
     required: true,
   },
 });
@@ -35,20 +35,17 @@ const borrowedItemsSchema = mongoose.Schema({
   },
   borrower: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "users",
+    required: true,
   },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "users",
+    required: true,
   },
   className: {
     type: String,
     require: true
-  },
-  instructor: {
-    type: String,
   },
   dis: {
     type: Boolean,
