@@ -38,10 +38,24 @@ const findUserBySchoolIdAndPassword = async (schooldId, password) => {
   return await Users.findOne(query).lean();
 };
 
+const getFacultyUsersByDepartment = async (department, search) => {
+  let query = {
+    $or: [
+      { firstName: { $regex: search, $options: "i" } },
+      { lastName: { $regex: search, $options: "i" } },
+    ],
+    department: { $in: department },
+    role: { $in: ['faculty'] },
+  };
+
+  return await Users.find(query).select("firstName lastName department").lean();
+};
+
 module.exports = {
   getChairman,
   getOIC,
   getAdministrator,
   findUserBySchoolId,
   findUserBySchoolIdAndPassword,
+  getFacultyUsersByDepartment,
 };

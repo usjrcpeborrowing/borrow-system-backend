@@ -19,12 +19,17 @@ router.get("/", async (req, res) => {
         path: "itemborrowed.equipment",
         select: "name brand remarks",
       },
+      {
+        path: "instructor",
+        select: "firstName lastName department",
+      },
     ];
 
-    let query = {
-      status,
-      dis: true,
-    };
+    let query = { dis: true };
+
+    if (instructor) query.instructor = instructor;
+    if (status) query.status = status;
+
 
     let [borrowedItems, total] = await Promise.all([
       findEquipmentByQuery(query, populateQuery, limit, page),
@@ -61,11 +66,15 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    
+
     let itemIds = req.body.items.map((x) => x.equipment);
     let status = req.body.status;
     let result = await updateEquipmentStatus(id, itemIds, status);
-    res.json({ data: result, message: "success updating borrowed items", success: true });
+    res.json({
+      data: result,
+      message: "success updating borrowed items",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

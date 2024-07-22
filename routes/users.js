@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
     let data = req.body;
     console.log({ schoolId: data.schoolId });
     let user = await userRepository.findUserBySchoolId(data.schoolId);
-    console.log(user)
+    console.log(user);
     if (user) throw new Error("schoolId already exists");
     await Users.create(data);
     res.json({ message: "success added", success: true });
@@ -90,6 +90,25 @@ router.get("/getadministrator", async (req, res) => {
     res.json({
       data: result,
       message: "success getting admistrator",
+      success: true,
+    });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getdepartmentfaculty", async (req, res) => {
+  try {
+    let { department = [], search = "" } = req.query;
+    department = Array.isArray(department) ? department : [department];
+    console.log({department, search})
+    let result = await userRepository.getFacultyUsersByDepartment(
+      department,
+      search
+    );
+    res.json({
+      data: result,
+      message: "success getting faculty by department",
       success: true,
     });
   } catch (err) {
