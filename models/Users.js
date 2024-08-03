@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const enums = require('./../shared/enum');
 const userSchema = mongoose.Schema({
   userId: {
     type: String,
@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
   },
   role: {
     type: [String],
-    enum: ["student", "reads", "oic", "faculty", "chairman", "administrator"],
+    enum: enums.roles,
     required: true,
   },
   department: {
@@ -45,4 +45,4 @@ const userSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("user", userSchema);

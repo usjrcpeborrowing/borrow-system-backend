@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const enums = require("./../shared/enum");
 const EquipmentSchema = mongoose.Schema({
   serialNo: {
     type: String,
@@ -27,21 +27,23 @@ const EquipmentSchema = mongoose.Schema({
   },
   matter: {
     type: String,
-    default: "Solid",
+    enum: ["solid", "liquid", "gas"],
+    default: "solid",
   },
   description: {
     type: String,
   },
-  status: {
+  condition: {
     type: String,
+    enum: ["functional", "defective", "obsolete", "lost", "turned_over"],
+    dafault: "functional",
   },
   dateAcquired: {
     type: Date,
     required: true,
     default: Date.now,
   },
-  images: 
-  {
+  images: {
     thumbnailUrl: String,
     midSizeUrl: String,
     Url: String,
@@ -49,7 +51,7 @@ const EquipmentSchema = mongoose.Schema({
   remarks: {
     type: String,
   },
-  tags: {
+  inventorytag: {
     type: Boolean,
   },
   checkedBy: {
@@ -57,17 +59,19 @@ const EquipmentSchema = mongoose.Schema({
   },
   department: {
     type: String,
+    enum: enums.departments,
+    required: true,
   },
   availability: {
     type: String,
     enum: ["available", "borrowed", "unreturned "],
+    default: "available",
     required: true,
   },
   dis: {
     type: Boolean,
     default: true,
   },
-  
 });
 
 module.exports = mongoose.model("equipment", EquipmentSchema);

@@ -28,7 +28,7 @@ const class_schedule = require("./routes/classSchedule");
 // const instructor = require("./routes/instructor");
 const users = require("./routes/users");
 const department = require("./routes/department");
-const usertypes = require("./routes/usertypes");
+// const usertypes = require("./routes/usertypes");
 const report = require("./routes/report");
 const transactions = require("./routes/transaction");
 const inventoryreport = require("./routes/inventoryReport");
@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
     delete app.userSockets[userId];
     console.log(app.userSockets);
   });
+
 });
 
 /**
@@ -83,12 +84,11 @@ app.use("/api/borroweditems", borrowedItems);
 app.use("/api/classschedule", class_schedule);
 app.use("/api/users", users);
 app.use("/api/department", department);
-app.use("/api/usertypes", usertypes);
+// app.use("/api/usertypes", usertypes);
 app.use("/api/report", report);
 app.use("/api/transaction", transactions);
 app.use("/api/inventoryreport", inventoryreport);
 app.use("/api/notification", notificationRoute);
-
 
 try {
   mongoose.connect(process.env.DATABASE);

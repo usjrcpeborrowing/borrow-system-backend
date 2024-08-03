@@ -16,4 +16,4 @@ const EquipmentTypeSchema = mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('equipmentType', EquipmentTypeSchema);
+module.exports = mongoose.model('equipmenttype', EquipmentTypeSchema);

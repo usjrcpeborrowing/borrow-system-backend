@@ -12,14 +12,27 @@ const itemSchema = mongoose.Schema({
   },
   condition: {
     type: String,
-    default: "good",
+    enum: ["functional", "defective", "obsolete", "lost"],
+    default: "functional",
   },
   status: {
     type: String,
-    enum:  ["approved", "released", "unreturned", "pending_approval", "pending_return", "returned"],
+    enum: [
+      "approved",
+      "rejected",
+      "released",
+      "unreturned",
+      "pending_approval",
+      "pending_return",
+      "returned",
+    ],
     default: "pending_approval",
     required: true,
   },
+  remarks: {
+    type: String,
+    default: ""
+  }
 });
 
 const borrowedItemsSchema = mongoose.Schema({
@@ -45,7 +58,7 @@ const borrowedItemsSchema = mongoose.Schema({
   },
   className: {
     type: String,
-    require: true
+    require: true,
   },
   dis: {
     type: Boolean,

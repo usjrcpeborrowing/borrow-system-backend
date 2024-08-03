@@ -6,6 +6,8 @@ const {
   findEquipmentByQuery,
 } = require("../repositories/borrowedItems");
 
+const notificationRepository = require("../repositories/notification");
+
 router.get("/", async (req, res) => {
   try {
     let page = req.query.page;
@@ -30,7 +32,6 @@ router.get("/", async (req, res) => {
     if (instructor) query.instructor = instructor;
     if (status) query.status = status;
 
-
     let [borrowedItems, total] = await Promise.all([
       findEquipmentByQuery(query, populateQuery, limit, page),
       BorrowedItems.find({ dis: true }).count(),
@@ -50,9 +51,18 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     let data = req.body;
-    await BorrowedItems.create(data);
     const socketId = req?.userSockets[data.instructor];
-    req.io.to(socketId).emit("notification", "New Borrow Request");
+    let message = `New Borrow Request from class ${data.className}`;
+
+    await BorrowedItems.create(data);
+    await notificationRepository.createNotification(
+      message,
+      data.instructor,
+      "borrow"
+    );
+    console.log(socketId)
+    req.io.to(socketId).emit("notification", message);
+
     res.json({
       data: null,
       message: "Success requesting borrow equipments",
@@ -66,16 +76,19 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     let id = req.params.id;
-
+    let items = req.body.items;
+    console.log('iteeeems', items)
     let itemIds = req.body.items.map((x) => x.equipment);
     let status = req.body.status;
-    let result = await updateEquipmentStatus(id, itemIds, status);
+    let result = await updateEquipmentStatus(id, items, status);
+    console.log(result)
     res.json({
       data: result,
       message: "success updating borrowed items",
       success: true,
     });
   } catch (err) {
+    console.error(err.message)
     res.json({ data: null, message: err.message, success: false });
   }
 });

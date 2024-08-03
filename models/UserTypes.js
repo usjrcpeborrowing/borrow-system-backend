@@ -11,4 +11,4 @@ const userTypesSchema = mongoose.Schema({
   
 });
 
-module.exports = mongoose.model("userTypes", userTypesSchema);
+module.exports = mongoose.model("usertype", userTypesSchema);
