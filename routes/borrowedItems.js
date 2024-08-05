@@ -7,6 +7,7 @@ const {
 } = require("../repositories/borrowedItems");
 
 const notificationRepository = require("../repositories/notification");
+const equipmentRepository = require("../repositories/equipment");
 
 router.get("/", async (req, res) => {
   try {
@@ -52,6 +53,7 @@ router.post("/", async (req, res) => {
   try {
     let data = req.body;
     const socketId = req?.userSockets[data.instructor];
+    let equipmentIds = req.body.itemborrowed;
     let message = `New Borrow Request from class ${data.className}`;
 
     await BorrowedItems.create(data);
@@ -60,7 +62,8 @@ router.post("/", async (req, res) => {
       data.instructor,
       "borrow"
     );
-    console.log(socketId)
+
+    await equipmentRepository.updateEquipmentAvailability(equipmentIds);
     req.io.to(socketId).emit("notification", message);
 
     res.json({
@@ -77,18 +80,18 @@ router.patch("/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let items = req.body.items;
-    console.log('iteeeems', items)
+    console.log("iteeeems", items);
     let itemIds = req.body.items.map((x) => x.equipment);
     let status = req.body.status;
     let result = await updateEquipmentStatus(id, items, status);
-    console.log(result)
+    console.log(result);
     res.json({
       data: result,
       message: "success updating borrowed items",
       success: true,
     });
   } catch (err) {
-    console.error(err.message)
+    console.error(err.message);
     res.json({ data: null, message: err.message, success: false });
   }
 });

@@ -1,6 +1,7 @@
 const express = require("express");
 const Users = require("../models/Users");
 const userRepository = require("../repositories/users");
+const verifyPermission = require("../middlewares/verifyPermission");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -32,7 +33,7 @@ router.post("/", async (req, res) => {
     let user = await userRepository.findUserBySchoolId(data.schoolId);
     console.log(user);
     if (user) throw new Error("schoolId already exists");
-    await Users.create(data);
+    await userRepository.createUser(data);
     res.json({ message: "success added", success: true });
   } catch (err) {
     res.json({ message: err.message, success: false });
@@ -97,11 +98,11 @@ router.get("/getadministrator", async (req, res) => {
   }
 });
 
-router.get("/getdepartmentfaculty", async (req, res) => {
+router.get("/c", async (req, res) => {
   try {
     let { department = [], search = "" } = req.query;
     department = Array.isArray(department) ? department : [department];
-    console.log({department, search})
+    console.log({ department, search });
     let result = await userRepository.getFacultyUsersByDepartment(
       department,
       search
@@ -116,4 +117,16 @@ router.get("/getdepartmentfaculty", async (req, res) => {
   }
 });
 
+router.patch("/activateuser/:id", verifyPermission, async (req, res) => {
+  try {
+    console.log("active user");
+    res.json({
+      data: null,
+      message: "success getting faculty by department",
+      success: true,
+    });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
 module.exports = router;

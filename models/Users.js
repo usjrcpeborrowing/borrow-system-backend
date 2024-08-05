@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
     required: true,
   },
   department: {
-    enum: ["CPE"],
+    enum: enums.departments,
     type: [String],
     required: true,
   },
@@ -39,6 +39,11 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  activated: {
+    type: Boolean,
+    default: false
+  },
+
   dis: {
     type: Boolean,
     default: true,

@@ -35,8 +35,13 @@ const EquipmentSchema = mongoose.Schema({
   },
   condition: {
     type: String,
-    enum: ["functional", "defective", "obsolete", "lost", "turned_over"],
+    enum: enums.equipment_condition,
     dafault: "functional",
+  },
+  status: {
+    type: String,
+    enum: enums.equipment_status,
+    dafault: "acquired",
   },
   dateAcquired: {
     type: Date,
@@ -44,9 +49,18 @@ const EquipmentSchema = mongoose.Schema({
     default: Date.now,
   },
   images: {
-    thumbnailUrl: String,
-    midSizeUrl: String,
-    Url: String,
+    thumbnailUrl: {
+      type: String,
+      default: "",
+    },
+    midSizeUrl: {
+      type: String,
+      default: "",
+    },
+    url: {
+      type: String,
+      default: "",
+    },
   },
   remarks: {
     type: String,
@@ -58,15 +72,28 @@ const EquipmentSchema = mongoose.Schema({
     type: String,
   },
   department: {
-    type: String,
+    type: [String],
     enum: enums.departments,
     required: true,
   },
   availability: {
     type: String,
-    enum: ["available", "borrowed", "unreturned "],
+    enum: enums.equipment_availability,
     default: "available",
     required: true,
+  },
+  inventorytype: {
+    type: String,
+    enum: ["inventory", "non_inventory"],
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  isborrow: {
+    type: Boolean,
+    default: true,
   },
   dis: {
     type: Boolean,

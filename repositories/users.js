@@ -1,5 +1,5 @@
 const Users = require("../models/Users");
-
+const stringservice = require("../shared/stringservice");
 const getChairman = async (dept) => {
   let query = {
     department: { $in: [dept] },
@@ -45,10 +45,24 @@ const getFacultyUsersByDepartment = async (department, search) => {
       { lastName: { $regex: search, $options: "i" } },
     ],
     department: { $in: department },
-    role: { $in: ['faculty'] },
+    role: { $in: ["faculty"] },
   };
 
   return await Users.find(query).select("firstName lastName department").lean();
+};
+
+const createUser = async (data) => {
+  const user = {
+    ...data,
+    firstName: stringservice.toProperCase(data.firstName),
+    middleName: stringservice.toProperCase(data.middleName),
+    lastName: stringservice.toProperCase(data.lastName),
+  };
+  return await Users.create(user);
+};
+
+const updateUser = async (userid, update) => {
+  return await Users.findByIdAndUpdate(userid, update);
 };
 
 module.exports = {
@@ -58,4 +72,6 @@ module.exports = {
   findUserBySchoolId,
   findUserBySchoolIdAndPassword,
   getFacultyUsersByDepartment,
+  createUser,
+  updateUser
 };

@@ -8,7 +8,10 @@ const fs = require("fs");
   let equipment = await csvRead(stream);
   console.log(equipment[0]);
   await connectDB();
-  await delay(addEquipment(equipment[0]));
+  
+  for(let eq of equipment) {
+    await delay(addEquipment(eq));
+  }
 })();
 
 async function connectDB() {
@@ -27,19 +30,33 @@ async function addEquipment(equipment) {
       serialNo: equipment["Serial #"].trim(),
       equipmentType: "transit",
       name: toProperCase(equipment["Description"]),
-      brand: toProperCase(equipment['Brand']),
+      brand: toProperCase(equipment["Brand"]),
       color: "",
-      modelNo: toProperCase(equipment['Model']),
-      quantity: toProperCase(equipment['Quantity']),
-      unit: equipment['Unit'].toLowerCase(),
-      condition: "functional".toLowerCase(),
-      department: "civil engineering",
+      modelNo: toProperCase(equipment["Model"]),
+      quantity: toProperCase(equipment["Quantity"]),
+      unit: equipment["Unit"].toLowerCase(),
+      condition: getCondition(equipment),
+      status: getStatus(equipment),
+      location: toProperCase(equipment["Location"]),
+      department: ["civil engineering"],
+      inventorytype: "inventory",
       inventorytag: true,
     });
     console.log("new equipment created with id:", result._id);
   } catch (err) {
     console.log(err);
   }
+}
+
+function getCondition(equipment) {
+  if (equipment["Remarks/Action Taken"].length) return "functional";
+  else return "defective";
+}
+
+function getStatus(equipment) {
+  if (equipment["A"].length) return "acquired";
+  else if (equipment["R"].length) return "turned_over";
+  else return "o";
 }
 
 async function delay(fn, params) {

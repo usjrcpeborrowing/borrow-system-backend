@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
     if (!user) throw new Error("Login failed");
 
     delete user.password;
-    const token = generateAccessToken({ schoolId });
+    const token = generateAccessToken(schoolId);
     res.json({
       data: user,
       token,
