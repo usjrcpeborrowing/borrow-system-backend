@@ -13,7 +13,7 @@ const updateEquipmentStatus = async (id, equipments, status) => {
         [`itemborrowed.$[elem${index}].quantity`]: update.quantity,
         [`itemborrowed.$[elem${index}].condition`]: update.condition,
         [`itemborrowed.$[elem${index}].status`]: status,
-        [`itemborrowed.$[elem${index}].remarks`]: update.remarks
+        [`itemborrowed.$[elem${index}].remarks`]: update.remarks,
       };
     })
     .reduce((acc, curr) => Object.assign(acc, curr), {});
@@ -24,18 +24,19 @@ const updateEquipmentStatus = async (id, equipments, status) => {
   console.log(arrayFilters);
   console.log(updateOperations);
 
-  return await BorrowedItems.updateMany(
-    { _id: id },
-    { $set: updateOperations },
-    { arrayFilters: arrayFilters }
-  );
+  return await BorrowedItems.updateMany({ _id: id }, { $set: updateOperations }, { arrayFilters: arrayFilters });
 };
 
-const findEquipmentByQuery = async (query, populateQuery, limit, page) => {
+const findBorrowedItemsByQuery = async (query, populateQuery, limit, page) => {
   return BorrowedItems.find(query)
     .populate(populateQuery)
     .limit(limit)
     .skip(limit * (page - 1));
 };
 
-module.exports = { updateEquipmentStatus, findEquipmentByQuery };
+const getBorrowedItemsByEquipmentIds = async (equipmentIds, limit, page, populateQuery) => {
+  let query = { "itemborrowed.equipment": { $in: equipmentIds }, "itemborrowed.status": { $ne: "returned" } };
+  return BorrowedItems.find(query).lean();
+};
+
+module.exports = { updateEquipmentStatus, findBorrowedItemsByQuery, getBorrowedItemsByEquipmentIds };

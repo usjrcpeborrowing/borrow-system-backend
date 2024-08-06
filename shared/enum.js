@@ -7,7 +7,7 @@ const roles = [
   "administrator",
 ];
 
-const departments = ["computer engineering", "civil engineering"];
+const departments = ["computer_engineering", "civil_engineering"];
 
 const equipment_availability = ["available", "borrowed", "unreturned"];
 const equipment_condition = ["functional", "defective", "obsolete", "lost"];

@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Equipment = require("../models/Equipment");
+const equipmentRepository = require("../repositories/equipment");
+const borrowedItemsRepository = require("../repositories/borrowedItems");
 
 const router = express.Router();
 
@@ -17,6 +19,7 @@ router.get("/", async (req, res) => {
     let remarks = req.query.remarks;
     let department = req.query.department;
     let location = req.query.location;
+    let availability = req.query.availability;
     let populateQuery = [{ path: "type", select: "name" }];
     let query = { dis: true };
 
@@ -38,6 +41,7 @@ router.get("/", async (req, res) => {
     if (remarks) query.remarks = remarks;
     if (department) query.department = department;
     if (location) query.location = location;
+    if (availability) query.availability = availability;
 
     let [equipments, total] = await Promise.all([
       Equipment.find(query)
@@ -50,6 +54,54 @@ router.get("/", async (req, res) => {
       total: total,
       message: "success get",
       success: true,
+    });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/getavailableequipment", async (req, res) => {
+  try {
+    let { department, availability = "available", page = 1, limit = 100 } = req.query;
+
+    let query = {
+      // availability: availability,
+      department: department,
+    };
+    let [equipments, total] = await equipmentRepository.getEquipmentByQuery(query, limit, page);
+    let borrowedItemIds = equipments.map((x) => x._id);
+    let currentBorrowedItems = await borrowedItemsRepository.getBorrowedItemsByEquipmentIds(
+      borrowedItemIds,
+      limit,
+      page,
+      ""
+    );
+
+    let filtered = currentBorrowedItems
+      .map((x) => x.itemborrowed)
+      .flat(1)
+      .filter((item) => item.status != "returned");
+
+    equipments = equipments
+      .map((item) => {
+        let found = filtered.find((x) => x.equipment.toString() == item._id.toString());
+        if (found && item.quantity > found.quantity) {
+          item.quantity = item.quantity - found.quantity;
+        } else if (found) {
+          item.availability = "borrowed";
+        }
+
+        return item;
+      })
+      .filter((x) => x.availability != "borrowed");
+
+    console.log([...new Set(filtered.map((x) => x.equipment))]);
+
+    res.json({
+      data: equipments,
+      message: "success getting available equipments",
+      success: true,
+      total: equipments.length,
     });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
@@ -86,10 +138,7 @@ router.get("/getmatterlist", async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
 
-    let [brandlist, total] = await Promise.all([
-      Equipment.distinct("matter"),
-      Equipment.find({ dis: true }).count(),
-    ]);
+    let [brandlist, total] = await Promise.all([Equipment.distinct("matter"), Equipment.find({ dis: true }).count()]);
 
     res.json({
       data: brandlist,
@@ -143,10 +192,7 @@ router.get("/getinventorytypelist", async (req, res) => {
 
 router.get("/getremarks", async (req, res) => {
   try {
-    let [remarks] = await Promise.all([
-      Equipment.distinct("remarks"),
-      Equipment.find({ dis: true }).count(),
-    ]);
+    let [remarks] = await Promise.all([Equipment.distinct("remarks"), Equipment.find({ dis: true }).count()]);
 
     res.json({ data: remarks, message: "success get", success: true });
   } catch (err) {
@@ -376,10 +422,7 @@ router.get("/search", async (req, res) => {
   try {
     let searchword = req.query.search;
     let equipments = await Equipment.find({
-      $or: [
-        { name: { $regex: searchword, $options: "i" } },
-        { description: { $regex: searchword, $options: "i" } },
-      ],
+      $or: [{ name: { $regex: searchword, $options: "i" } }, { description: { $regex: searchword, $options: "i" } }],
     });
     res.json({ data: equipments, message: "success search", success: true });
   } catch (err) {

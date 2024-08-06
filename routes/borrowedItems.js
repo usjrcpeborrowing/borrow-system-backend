@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const BorrowedItems = require("../models/BorrowedItems");
-const {
-  updateEquipmentStatus,
-  findEquipmentByQuery,
-} = require("../repositories/borrowedItems");
+const borrowedItemsRepository = require("../repositories/borrowedItems");
 
 const notificationRepository = require("../repositories/notification");
 const equipmentRepository = require("../repositories/equipment");
@@ -34,7 +31,7 @@ router.get("/", async (req, res) => {
     if (status) query.status = status;
 
     let [borrowedItems, total] = await Promise.all([
-      findEquipmentByQuery(query, populateQuery, limit, page),
+      borrowedItemsRepository.findBorrowedItemsByQuery(query, populateQuery, limit, page),
       BorrowedItems.find({ dis: true }).count(),
     ]);
 
@@ -53,17 +50,17 @@ router.post("/", async (req, res) => {
   try {
     let data = req.body;
     const socketId = req?.userSockets[data.instructor];
-    let equipmentIds = req.body.itemborrowed;
+    let equipmentIds = req.body.itemborrowed.map((x) => x.equipment);
     let message = `New Borrow Request from class ${data.className}`;
 
     await BorrowedItems.create(data);
-    await notificationRepository.createNotification(
-      message,
-      data.instructor,
-      "borrow"
-    );
+    // await notificationRepository.createNotification(
+    //   message,
+    //   data.instructor,
+    //   "borrow"
+    // );
 
-    await equipmentRepository.updateEquipmentAvailability(equipmentIds);
+    // await equipmentRepository.updateEquipmentAvailability(equipmentIds);
     req.io.to(socketId).emit("notification", message);
 
     res.json({
@@ -83,7 +80,7 @@ router.patch("/:id", async (req, res) => {
     console.log("iteeeems", items);
     let itemIds = req.body.items.map((x) => x.equipment);
     let status = req.body.status;
-    let result = await updateEquipmentStatus(id, items, status);
+    let result = await borrowedItemsRepository.updateEquipmentStatus(id, items, status);
     console.log(result);
     res.json({
       data: result,

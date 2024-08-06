@@ -98,7 +98,7 @@ router.get("/getadministrator", async (req, res) => {
   }
 });
 
-router.get("/c", async (req, res) => {
+router.get("/getdepartmentfaculty", async (req, res) => {
   try {
     let { department = [], search = "" } = req.query;
     department = Array.isArray(department) ? department : [department];
