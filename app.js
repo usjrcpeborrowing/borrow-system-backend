@@ -34,6 +34,8 @@ const transactions = require("./routes/transaction");
 const inventoryreport = require("./routes/inventoryReport");
 const loginRoute = require("./routes/login");
 const notificationRoute = require("./routes/notifications");
+const signupRoute = require("./routes/signup");
+
 
 const authenticate = require("./middlewares/authenticate");
 
@@ -77,6 +79,7 @@ app.use(function (req, res, next) {
  * routes
  */
 app.use("/api/login", loginRoute);
+app.use("/api/signup", signupRoute);
 app.use(authenticate);
 app.use("/api/equipment", equipmentRoute);
 app.use("/api/equipmenttype", equipmenttypeRoute);

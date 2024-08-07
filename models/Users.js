@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
-const enums = require('./../shared/enum');
+const enums = require("./../shared/enum");
 const userSchema = mongoose.Schema({
-  userId: {
+  email: {
     type: String,
+    required: true
   },
   firstName: {
     type: String,
@@ -23,12 +24,12 @@ const userSchema = mongoose.Schema({
   role: {
     type: [String],
     enum: enums.roles,
-    required: true,
+    validate: (v) => Array.isArray(v) && v.length > 0,
   },
   department: {
-    enum: enums.departments,
     type: [String],
-    required: true,
+    enum: enums.departments,
+    validate: (v) => Array.isArray(v) && v.length > 0,
   },
   schoolId: {
     type: Number,
@@ -41,7 +42,7 @@ const userSchema = mongoose.Schema({
   },
   activated: {
     type: Boolean,
-    default: false
+    default: false,
   },
 
   dis: {
