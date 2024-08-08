@@ -28,15 +28,16 @@ const updateEquipmentStatus = async (id, equipments, status) => {
 };
 
 const findBorrowedItemsByQuery = async (query, populateQuery, limit, page) => {
-  return BorrowedItems.find(query)
+  return await BorrowedItems.find(query)
     .populate(populateQuery)
     .limit(limit)
     .skip(limit * (page - 1));
 };
 
 const getBorrowedItemsByEquipmentIds = async (equipmentIds, limit, page, populateQuery) => {
-  let query = { "itemborrowed.equipment": { $in: equipmentIds }, "itemborrowed.status": { $ne: "returned" } };
-  return BorrowedItems.find(query).lean();
+  // let query = { "itemborrowed.equipment": { $in: equipmentIds }, "itemborrowed.status": { $ne: "returned" } };
+  let query = { "itemborrowed.equipment": { $in: equipmentIds } };
+  return await BorrowedItems.find(query).lean();
 };
 
 module.exports = { updateEquipmentStatus, findBorrowedItemsByQuery, getBorrowedItemsByEquipmentIds };

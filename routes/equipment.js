@@ -80,7 +80,7 @@ router.get("/getavailableequipment", async (req, res) => {
     let filtered = currentBorrowedItems
       .map((x) => x.itemborrowed)
       .flat(1)
-      .filter((item) => item.status != "returned");
+      .filter((item) => !["returned", "rejected"].includes(item.status));
 
     equipments = equipments
       .map((item) => {
@@ -294,60 +294,63 @@ router.get("/getbycolordesc", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let {
-      authorize,
-      uploadFile,
-      createNewFolder,
-      compressImage,
-      thumbSizeUpload,
-      midSizeUpload,
-      convertImage,
-      fetchImage,
-      toThumbnail,
-      toMidSize,
-      initializeVariable,
-      getThumbnailURL,
-      getMidSizeURL,
-    } = require("../scripts/uploadEquipment");
+    // let {
+    //   authorize,
+    //   uploadFile,
+    //   createNewFolder,
+    //   compressImage,
+    //   thumbSizeUpload,
+    //   midSizeUpload,
+    //   convertImage,
+    //   fetchImage,
+    //   toThumbnail,
+    //   toMidSize,
+    //   initializeVariable,
+    //   getThumbnailURL,
+    //   getMidSizeURL,
+    // } = require("../scripts/uploadEquipment");
+
+    // let data = await req.body;
+    // let directory = {
+    //   Inventory: "16Hn6FnhtPplQaLiMXKPIqMWBjoY7l6T4",
+    //   Non_Inventory: "1PN3cEnrDHW0LmVvAJEjNEMASBpdizTES",
+    // };
+
+    // let URL = await data.images.Url;
+    // let mainFolder = "";
+
+    // console.log("Current URL: " + URL);
+    // if (data.description === "Inventory") {
+    //   mainFolder = directory.Inventory;
+    // } else {
+    //   mainFolder = directory.Non_Inventory;
+    // }
+    // let department = data.department;
+    // let nameEquipment = data.equipmentType;
+
+    // await initializeVariable(department, nameEquipment, URL, mainFolder);
+    // await compressImage();
+
+    // let thumbnailUrl = await getThumbnailURL();
+    // let midSizeUrl = await getMidSizeURL();
+
+    // // thumbnailUrl, midSizeUrl = await getURL();
+
+    // console.log("Thumbnail Url : " + thumbnailUrl);
+
+    // data.images.thumbnailUrl = thumbnailUrl;
+    // data.images.midSizeUrl = midSizeUrl;
+
 
     let data = await req.body;
-    let directory = {
-      Inventory: "16Hn6FnhtPplQaLiMXKPIqMWBjoY7l6T4",
-      Non_Inventory: "1PN3cEnrDHW0LmVvAJEjNEMASBpdizTES",
-    };
-
-    let URL = await data.images.Url;
-    let mainFolder = "";
-
-    console.log("Current URL: " + URL);
-    if (data.description === "Inventory") {
-      mainFolder = directory.Inventory;
-    } else {
-      mainFolder = directory.Non_Inventory;
-    }
-    let department = data.department;
-    let nameEquipment = data.equipmentType;
-
-    await initializeVariable(department, nameEquipment, URL, mainFolder);
-    await compressImage();
-
-    let thumbnailUrl = await getThumbnailURL();
-    let midSizeUrl = await getMidSizeURL();
-
-    // thumbnailUrl, midSizeUrl = await getURL();
-
-    console.log("Thumbnail Url : " + thumbnailUrl);
-
-    data.images.thumbnailUrl = thumbnailUrl;
-    data.images.midSizeUrl = midSizeUrl;
-    await Equipment.create(data);
+    let result = await equipmentRepository.createEquipment(data)
     res.json({
-      data: data,
+      data: result,
       message: "success creating equipment",
       success: true,
     });
   } catch (err) {
-    res.json({ data: null, message: err.message, success: false });
+    res.status(400).json({ data: null, message: err.message, success: false });
   }
 });
 

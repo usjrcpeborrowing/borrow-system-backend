@@ -14,14 +14,14 @@ router.get("/", async (req, res) => {
     let instructor = req.query.instructor;
 
     let populateQuery = [
-      { path: "borrower", select: "schoolId firstName lastName" },
+      { path: "borrower", select: "schoolId firstName lastName department" },
       {
         path: "itemborrowed.equipment",
         select: "name brand remarks",
       },
       {
         path: "instructor",
-        select: "firstName lastName department",
+        select: "schoolId firstName lastName department",
       },
     ];
 
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
 
     let [borrowedItems, total] = await Promise.all([
       borrowedItemsRepository.findBorrowedItemsByQuery(query, populateQuery, limit, page),
-      BorrowedItems.find({ dis: true }).count(),
+      BorrowedItems.find(query).count(),
     ]);
 
     res.json({

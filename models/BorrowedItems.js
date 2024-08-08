@@ -48,12 +48,12 @@ const borrowedItemsSchema = mongoose.Schema({
   },
   borrower: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "user",
     required: true,
   },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "user",
     required: true,
   },
   className: {
